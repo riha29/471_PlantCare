@@ -1,6 +1,6 @@
 // backend/models/User.js
 const { Schema, model } = require('mongoose');
-const { genSalt, hash, compare } = require('bcryptjs');
+const { genSalt, hash, bcrypt, compare } = require('bcryptjs');
 
 // User Schema
 const userSchema = Schema({

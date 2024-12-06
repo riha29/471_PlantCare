@@ -5,12 +5,12 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 
+
 // Load environment variables
 dotenv.config();
 
 // Connect to MongoDB
 connectDB();
-
 const app = express();
 
 // Middleware
