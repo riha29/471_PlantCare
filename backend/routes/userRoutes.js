@@ -1,5 +1,5 @@
 const express = require('express');
-const User = require('../models/user');
+const User = require('./models/user');
 const bcrypt = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
 const router = express.Router();
@@ -97,9 +97,6 @@ router.put('/update-profile', protect, async (req, res) => {
   }
 });
 
-router.get('/test', (req, res) => {
-  res.status(200).json({ message: 'Test route is working!' });
-});
 
 
 module.exports = router;
