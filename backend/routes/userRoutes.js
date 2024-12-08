@@ -37,7 +37,7 @@ router.post('/signup', async (req, res) => {
 });
 
 // User Signin
-router.post('/signin', async (req, res) => {
+router.post('/', async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -66,6 +66,21 @@ router.post('/signin', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+// get profile
+router.get('/profile', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 // Update Profile: Name, Email, Password
 router.put('/update-profile', protect, async (req, res) => {
