@@ -1,4 +1,5 @@
 // backend/models/User.js
+const mongoose = require('mongoose');
 const { Schema, model } = require('mongoose');
 const { genSalt, hash, bcrypt, compare } = require('bcryptjs');
 
@@ -37,5 +38,5 @@ userSchema.methods.matchPassword = async function(enteredPassword) {
   return await compare(enteredPassword, this.password);
 };
 
-const User = model('user', userSchema);
+const User = mongoose.models.User || mongoose.model('User', userSchema);
 module.exports=  User;

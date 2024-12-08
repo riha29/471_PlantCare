@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
+const { genSalt, hash, bcrypt, compare } = require('bcryptjs');
 
 const careSchema = new mongoose.Schema({
   watering: {
@@ -30,5 +32,5 @@ const plantSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Plant = model('plant', plantSchema);
+const Plant = mongoose.models.Plant || mongoose.model('Plant', plantSchema);
 module.exports=  Plant;
