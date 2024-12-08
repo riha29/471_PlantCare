@@ -47,6 +47,7 @@ router.get('/', protect, async (req, res) => {
 router.get('/:id', protect, async (req, res) => {
   try {
     const plant = await Plant.findById(req.params.id);
+    
     if (!plant || plant.userId.toString() !== req.userId) {
       return res.status(404).json({ message: 'Plant not found' });
     }
@@ -94,15 +95,19 @@ router.delete('/:id', protect, async (req, res) => {
 });
 
 router.put('/:id/status', protect, async (req, res) => {
+  console.log('Route Reached:', req.params.id); // Debugging
+  console.log('Request Body:', req.body);       // Debugging
+  console.log('Request User:', req.userId);     // Debugging
   const { status, health } = req.body;
   try {
     const plant = await Plant.findById(req.params.id);
-    
+
     if (!plant) {
       return res.status(404).json({ message: 'Plant not found' });
     }
       // Check if the plant belongs to the logged-in user
     if (plant.userId.toString() !== req.userId) {
+
       return res.status(403).json({ message: 'Not authorized to update this plant' });
     }
   
@@ -162,6 +167,12 @@ router.get('/overdue-tasks', protect, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+router.use((req, res, next) => {
+  console.log(`Incoming Request: ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 
 
   module.exports = router;
