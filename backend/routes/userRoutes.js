@@ -1,5 +1,5 @@
 const express = require('express');
-const User = require('../models/user'); // Correct relative path
+const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
 const router = express.Router();

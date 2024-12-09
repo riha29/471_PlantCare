@@ -1,4 +1,3 @@
-// backend/server.js
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -18,7 +17,7 @@ app.use(cors());
 app.use(express.json()); // Parse incoming JSON requests
 
 // Routes
-app.use('/api/users', userRoutes); // Register user routes with base URL
+app.use('/api/users', userRoutes);
 app.use('/api/plants', plantRoutes);
 
 // Start server
