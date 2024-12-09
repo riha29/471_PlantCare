@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
-import axios from '../api/axios'; // Import axios instance
+import { useNavigate } from 'react-router-dom'; 
+import axios from '../api/axios';
 import { Link } from 'react-router-dom';
 
 const SignUpPage = () => {
@@ -8,7 +8,7 @@ const SignUpPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,21 +16,20 @@ const SignUpPage = () => {
       const response = await axios.post('/users/signup', { name, email, password });
       const { token } = response.data;
 
-      // Save the token in localStorage
       localStorage.setItem('authToken', token);
 
-      // Redirect to the profile page
-      navigate('/profile'); // Redirect to the user profile after signup
+      navigate('/signin');
     } catch (error) {
       setMessage(error.response?.data?.message || 'Signup failed');
     }
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold text-center mb-4">Sign Up</h2>
-      {message && <p className="text-center text-red-500">{message}</p>}
+    <div className="max-w-md mx-auto bg-green-50 my-24 p-8 rounded-lg shadow-md">
+      <h2 className="text-2xl font-semibold text-center mb-4">Create a new account</h2>
+      {message && <p className="text-red-500 text-center mb-4">{message}</p>}
       <form onSubmit={handleSubmit}>
+        {/* Name Field */}
         <div className="mb-4">
           <label htmlFor="name" className="block text-gray-700">Name</label>
           <input
@@ -42,6 +41,8 @@ const SignUpPage = () => {
             required
           />
         </div>
+
+        {/* Email Field */}
         <div className="mb-4">
           <label htmlFor="email" className="block text-gray-700">Email</label>
           <input
@@ -53,6 +54,8 @@ const SignUpPage = () => {
             required
           />
         </div>
+
+        {/* Password Field */}
         <div className="mb-4">
           <label htmlFor="password" className="block text-gray-700">Password</label>
           <input
@@ -64,19 +67,25 @@ const SignUpPage = () => {
             required
           />
         </div>
-        <button type="submit" className="w-full bg-green-500 text-white p-2 rounded-md">
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600 transition duration-200"
+        >
           Sign Up
         </button>
       </form>
-      {/* Navigation to Sign In Page */}
+
+      {/* Navigation to Login Page */}
       <div className="text-center mt-4">
-          <p className="text-sm text-green-700">
-            Already have an account?{' '}
-            <Link to="/signin" className="text-blue-500 font-semibold">
-              Sign In
-            </Link>
-          </p>
-        </div>
+        <p className="text-sm text-gray-700">
+          Already have an account?{' '}
+          <Link to="/signin" className="text-blue-500 font-semibold">
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };
