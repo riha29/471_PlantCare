@@ -5,6 +5,7 @@ import UserProfile from './pages/UserProfile';
 import PlantProfile from './pages/PlantProfile';
 import ResearchWork from './pages/ResearchWork';
 import EditPlantProfile from './pages/EditPlantProfile';
+import VideoTutorials from './pages/VideoTutorials';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/plant-profile" element={<PlantProfile />} /> 
         <Route path="/edit-plant" element={<EditPlantProfile />} />
         <Route path="/research-work" element={<ResearchWork />} />
+        <Route path="/video-tutorials" element={<VideoTutorials/>} />
       </Routes>
     </Router>
   );
