@@ -6,6 +6,9 @@ import PlantProfile from './pages/PlantProfile';
 import ResearchWork from './pages/ResearchWork';
 import EditPlantProfile from './pages/EditPlantProfile';
 import VideoTutorials from './pages/VideoTutorials';
+import Marketplace from './pages/Marketplace';
+import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
         <Route path="/edit-plant" element={<EditPlantProfile />} />
         <Route path="/research-work" element={<ResearchWork />} />
         <Route path="/video-tutorials" element={<VideoTutorials/>} />
+        <Route path="/marketplace" element={<Marketplace/>}/>
+        <Route path="/cart" element={<CartPage />}/>
+        <Route path="/checkout" element={<CheckoutPage/>}/>
       </Routes>
     </Router>
   );

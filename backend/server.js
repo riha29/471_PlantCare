@@ -4,6 +4,10 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const plantRoutes = require('./routes/plantRoutes');
+const marketplaceRoutes = require("./routes/marketPlaceRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+const checkoutRoutes = require('./routes/checkoutRoutes');
+
 
 // Load environment variables
 dotenv.config();
@@ -19,6 +23,9 @@ app.use(express.json()); // Parse incoming JSON requests
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/plants', plantRoutes);
+app.use("/api/marketplace", marketplaceRoutes);
+app.use("/api/cart", cartRoutes);
+app.use('/api/checkout', checkoutRoutes);
 
 // Start server
 const PORT = process.env.PORT || 1000;
