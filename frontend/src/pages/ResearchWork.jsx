@@ -43,7 +43,7 @@ const ResearchWork = () => {
 
       {/* Button to go back to Plant Profile page */}
       <div className="text-center mt-6">
-        <Link to="/plantprofile" className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+        <Link to="/plant-profile" className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
           Go Back to Plant Profile
         </Link>
       </div>
