@@ -5,22 +5,22 @@ const ResearchWork = () => {
   const researchWorks = [
     {
       title: 'Research on Aloe Vera Benefits',
-      thumbnail: 'https://via.placeholder.com/150?text=Aloe+Vera',
+      thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbMvltQV3fnV9HmEmmffeaRVT20ZJlqm1Zzw&s',
       url: 'https://www.thedinglab.com/post/cultivating-success-mastering-the-art-of-plant-care-in-plant-biology-research',
     },
     {
       title: 'Plant Health Monitoring Techniques',
-      thumbnail: 'https://via.placeholder.com/150?text=Plant+Health',
+      thumbnail: 'https://www.researchgate.net/publication/355172015/figure/fig1/AS:11431281173029523@1688743554840/Wearable-plant-sensors-for-plant-health-monitoring-under-biotic-and-abiotic-stresses.png',
       url: 'https://pubs.acs.org/doi/10.1021/acsomega.0c05850',
     },
     {
       title: 'Sustainable Gardening Practices',
-      thumbnail: 'https://via.placeholder.com/150?text=Gardening',
+      thumbnail: 'https://miro.medium.com/v2/resize:fit:1400/0*00Ca31l0ik7ZAnhz.jpg',
       url: 'https://upcyclethat.com/sustainable-gardening-practices/',
     },
     {
       title: 'Plant Growth and Fertilization',
-      thumbnail: 'https://via.placeholder.com/150?text=Fertilization',
+      thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLhndNlmD70fU9fbHz0_9BnPWhpMmRQxtyrA&s',
       url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7954289/',
     },
   ];
