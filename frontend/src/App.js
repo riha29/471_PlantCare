@@ -8,7 +8,7 @@ import EditPlantProfile from './pages/EditPlantProfile';
 import ResearchWork from './pages/ResearchWork';
 import VideoTutorials from './pages/VideoTutorials';
 import Home from './pages/Home';
-import TransactionPage from './pages/TransactionPage';
+import MarketplacePage from './pages/MarketplacePage';
 
 function App() {
   return (
@@ -23,7 +23,7 @@ function App() {
           <Route path="/edit-plant/:id" element={<EditPlantProfile />} />
           <Route path="/research-work" element={<ResearchWork />} />
           <Route path="/video-tutorials" element={<VideoTutorials/>} />
-          <Route path='/transaction' element={<TransactionPage/>}/>
+          <Route path='/marketplace' element={<MarketplacePage/>}/>
         </Routes>
       </Router>
   );

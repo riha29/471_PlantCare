@@ -1,52 +1,37 @@
 const express = require("express");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const router = express.Router();
-const Cart = require("../models/cart");
-const Order = require("../models/order");
-const protect = require("../middleware/authMiddleware");
 
-// Checkout route
-router.post("/", protect, async (req, res) => {
-  const { address, paymentMethod } = req.body;
-
-  if (!address || !paymentMethod) {
-    return res.status(400).json({ message: "Address and payment method are required" });
-  }
+router.post("/create-checkout-session", async (req, res) => {
+  const { cartItems } = req.body;
 
   try {
-    const cart = await Cart.findOne({ userId: req.userId }).populate("items.productId");
+    // Create line items from the cart
+    const lineItems = cartItems.map((item) => ({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: item.name,
+          images: [item.image],
+        },
+        unit_amount: item.price * 100, // Convert to cents
+      },
+      quantity: item.quantity,
+    }));
 
-    if (!cart || cart.items.length === 0) {
-      return res.status(400).json({ message: "Your cart is empty" });
-    }
-
-    const total = cart.items.reduce((acc, item) => acc + item.quantity * item.productId.price, 0);
-
-    const order = new Order({
-      userId: req.userId,
-      items: cart.items.map((item) => ({
-        productId: item.productId._id,
-        name: item.productId.name,
-        quantity: item.quantity,
-        price: item.productId.price,
-      })),
-      total,
-      address,
-      paymentMethod,
+    // Create a Stripe checkout session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      mode: "payment",
+      success_url: "http://localhost:1000/transaction-success",
+      cancel_url: "http://localhost:1000/transaction-cancel",
     });
 
-    await order.save();
-
-    cart.items = [];
-    await cart.save();
-
-    res.status(201).json({
-      message: "Order placed successfully",
-      orderId: order._id,
-      order,
-    });
+    res.json({ url: session.url });
   } catch (error) {
-    console.error("Error during checkout:", error);
-    res.status(500).json({ message: "Failed to process the order" });
+    console.error("Error creating checkout session:", error.message);
+    res.status(500).json({ error: "Failed to create payment session" });
   }
 });
 

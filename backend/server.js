@@ -4,8 +4,9 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const plantRoutes = require('./routes/plantRoutes');
-// const marketplaceRoutes = require("./routes/marketPlaceRoutes");
+const marketplaceRoutes = require("./routes/marketPlaceRoutes");
 const productRoutes = require("./routes/productRoutes");
+const checkoutRoutes = require("./routes/checkoutRoutes")
 
 
 // Load environment variables
@@ -24,6 +25,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/plants', plantRoutes);
 app.use("/api/marketplace", marketplaceRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/checkout", checkoutRoutes);
+
 
 // Start server
 const PORT = process.env.PORT || 1000;

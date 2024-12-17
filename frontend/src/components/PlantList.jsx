@@ -6,27 +6,22 @@ const PlantList = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    let isMounted = true; // To prevent state updates if unmounted
     const fetchPlants = async () => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get("/plants", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("Fetched Plants:", response.data);
-        if (isMounted) setPlants(response.data); // Set plants only if mounted
+        setPlants(response.data);
       } catch (err) {
-        console.error("Error fetching plants:", err.response?.data || err.message);
-        if (isMounted) setError("Failed to fetch plants");
+        console.error("Error fetching plants:", err);
+        setError("Failed to fetch plants");
       }
     };
   
-    fetchPlants();
-  
-    return () => {
-      isMounted = false; // Cleanup to prevent re-renders
-    };
+    fetchPlants(); // Invoke the function here
   }, []);
+  
   
 
   return (
@@ -56,5 +51,6 @@ const PlantList = () => {
     </div>
   );
 };
+
 
 export default PlantList;

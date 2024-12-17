@@ -37,7 +37,7 @@ const ResearchWork = () => {
             <Link to="/research-work" className="hover:underline">Research</Link>
             <Link to="/video-tutorials" className="hover:underline">Tutorials</Link>
             <Link to="/plants" className="hover:underline">Plants</Link>
-            <Link to="/transaction" className="hover:underline">Marketplace</Link>
+            <Link to="/marketplace" className="hover:underline">MarketplacePage</Link>
             <Link to="/profile" className="hover:underline">User</Link>
           </div>
         </div>
