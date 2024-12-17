@@ -1,23 +1,36 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
 const protect = async (req, res, next) => {
   let token;
 
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    try {
-      token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  try {
+    token = req.headers.authorization?.split(" ")[1];
 
-      req.userId = decoded.id;
-
-      next();
-    } catch (error) {
-      console.error(error.message);
-      res.status(401).json({ message: 'Not authorized, token failed' });
+    if (!token) {
+      console.log("Token missing in headers");
+      return res.status(401).json({ message: "No token, authorization denied" });
     }
-  } else {
-    res.status(401).json({ message: 'No token provided' });
+
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded Token:", decoded);
+
+    req.userId = decoded.id;
+
+    // Attach user to the request (optional)
+    req.user = await User.findById(req.userId).select("-password");
+    if (!req.user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+    console.log("User attached to request:", req.user);
+    next();
+  } catch (error) {
+    console.error("Token verification failed:", error.message);
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Token expired, please log in again" });
+    }
+    return res.status(401).json({ message: "Invalid token" });
   }
 };
 

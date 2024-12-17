@@ -1,51 +1,52 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Cart = require('../models/cart'); // Assuming a Cart model exists
-const Order = require('../models/order'); // Assuming an Order model exists
-const protect = require('../middleware/authMiddleware'); // Middleware for authentication
+const Cart = require("../models/cart");
+const Order = require("../models/order");
+const protect = require("../middleware/authMiddleware");
 
 // Checkout route
-router.post('/', protect, async (req, res) => {
+router.post("/", protect, async (req, res) => {
   const { address, paymentMethod } = req.body;
 
+  if (!address || !paymentMethod) {
+    return res.status(400).json({ message: "Address and payment method are required" });
+  }
+
   try {
-    // Validate input
-    if (!address || !paymentMethod) {
-      return res.status(400).json({ message: 'Address and payment method are required' });
-    }
+    const cart = await Cart.findOne({ userId: req.userId }).populate("items.productId");
 
-    // Find the user's cart
-    const cart = await Cart.findOne({ userId: req.userId });
     if (!cart || cart.items.length === 0) {
-      return res.status(400).json({ message: 'Your cart is empty' });
+      return res.status(400).json({ message: "Your cart is empty" });
     }
 
-    // Create an order
+    const total = cart.items.reduce((acc, item) => acc + item.quantity * item.productId.price, 0);
+
     const order = new Order({
       userId: req.userId,
-      items: cart.items,
-      total: cart.total,
+      items: cart.items.map((item) => ({
+        productId: item.productId._id,
+        name: item.productId.name,
+        quantity: item.quantity,
+        price: item.productId.price,
+      })),
+      total,
       address,
       paymentMethod,
-      status: 'Pending', // Optional: Add an initial status for the order
     });
 
-    // Save the order to the database
     await order.save();
 
-    // Clear the user's cart
     cart.items = [];
-    cart.total = 0;
     await cart.save();
 
-    res.status(201).json({ 
-      message: 'Order placed successfully', 
-      orderId: order._id, // Return the order ID
-      order 
+    res.status(201).json({
+      message: "Order placed successfully",
+      orderId: order._id,
+      order,
     });
   } catch (error) {
-    console.error('Error in checkout:', error.message);
-    res.status(500).json({ message: 'Failed to process the order' });
+    console.error("Error during checkout:", error);
+    res.status(500).json({ message: "Failed to process the order" });
   }
 });
 

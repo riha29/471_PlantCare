@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 
 const VideoTutorials = ({ navigate }) => {
   const videos = [
@@ -12,6 +13,21 @@ const VideoTutorials = ({ navigate }) => {
 
   return (
     <div className="p-6">
+      <nav className="bg-green-900 mb-12 -m-8 pt-8 text-white">
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <h1 className="text-xl font-bold">
+            <Link to="/">Plant Care</Link>
+          </h1>
+          <div className="flex space-x-4">
+            <Link to="/home" className="hover:underline">Home</Link>
+            <Link to="/research-work" className="hover:underline">Research</Link>
+            <Link to="/video-tutorials" className="hover:underline">Tutorials</Link>
+            <Link to="/plants" className="hover:underline">Plants</Link>
+            <Link to="/transaction" className="hover:underline">Marketplace</Link>
+            <Link to="/profile" className="hover:underline">User</Link>
+          </div>
+        </div>
+      </nav>
       {/* Page Title */}
       <h1 className="text-2xl font-bold text-center mt-16 text-green-800">
         Video Tutorials

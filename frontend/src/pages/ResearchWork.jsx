@@ -27,7 +27,22 @@ const ResearchWork = () => {
 
   return (
     <div className="p-6 bg-green-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-green-800 text-center my-8">Plant Related Research Works</h1>
+      <nav className="bg-green-900 mb-12 -m-8 pt-8 text-white">
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <h1 className="text-xl font-bold">
+            <Link to="/">Plant Care</Link>
+          </h1>
+          <div className="flex space-x-4">
+            <Link to="/home" className="hover:underline">Home</Link>
+            <Link to="/research-work" className="hover:underline">Research</Link>
+            <Link to="/video-tutorials" className="hover:underline">Tutorials</Link>
+            <Link to="/plants" className="hover:underline">Plants</Link>
+            <Link to="/transaction" className="hover:underline">Marketplace</Link>
+            <Link to="/profile" className="hover:underline">User</Link>
+          </div>
+        </div>
+      </nav>
+      <h1 className="text-3xl pb-8 font-bold text-green-800 text-center my-8">Plant Related Research Works</h1>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {researchWorks.map((research, index) => (
@@ -50,18 +65,6 @@ const ResearchWork = () => {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Button to go back to Plant Profile page */}
-<<<<<<< HEAD
-      <div className="text-center mt-8">
-        <Link to="/plantprofile" className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700">
-=======
-      <div className="text-center mt-6">
-        <Link to="/plant-profile" className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
->>>>>>> ffb28672e2432f53dc11dad64969715cb8b75b34
-          Go Back to Plant Profile
-        </Link>
       </div>
     </div>
   );

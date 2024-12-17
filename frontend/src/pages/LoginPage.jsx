@@ -18,7 +18,7 @@ const LoginPage = () => {
       localStorage.setItem('authToken', token);
 
       // Redirect to the profile page
-      navigate('/profile');
+      navigate('/home');
     } catch (error) {
       setMessage(error.response?.data?.message || 'Invalid credentials');
     }

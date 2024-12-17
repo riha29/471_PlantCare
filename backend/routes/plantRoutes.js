@@ -1,133 +1,55 @@
-const express = require('express');
-const Plant = require('../models/plant');
-const bcrypt = require('bcryptjs');
-const { sign } = require('jsonwebtoken');
-const protect= require('../middleware/authMiddleware')
-
+const express = require("express");
+const Plant = require("../models/plant");
+const protect = require("../middleware/authMiddleware");
+const mongoose = require("mongoose");
 const router = express.Router();
 
-// creating new plant
-router.post('/', protect, async (req, res) => {
-  const { name, species, health, careSchedule } = req.body;
-  try {
-    const plant = await Plant.create({
-      name,
-      species,
-      health,
-      careSchedule,
-      userId: req.userId,
-    });
-    res.status(201).json({ message: 'Plant added successfully', plant });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// get all plants
-router.get('/', protect, async (req, res) => {
+// Fetch all plants of the logged-in user
+router.get("/", protect, async (req, res) => {
   try {
     const plants = await Plant.find({ userId: req.userId });
     res.status(200).json(plants);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error fetching plants:", error.message);
+    res.status(500).json({ message: "Server error. Please try again later." });
   }
 });
 
-// get plant by id
-router.get('/:id', protect, async (req, res) => {
+// Update Plant Information
+router.put("/:id", protect, async (req, res) => {
   try {
-    const plant = await Plant.findById(req.params.id);
-    
-    if (!plant || plant.userId.toString() !== req.userId) {
-      return res.status(404).json({ message: 'Plant not found' });
+    const { name, species, health, lastWatered, lastFertilized, image } = req.body;
+
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: "Invalid plant ID" });
     }
-    res.status(200).json(plant);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-  
-// update specific plant
-router.put('/:id/status', protect, async (req, res) => {
-  const { name, species, health, status, careSchedule } = req.body;
-  try {
+
     const plant = await Plant.findById(req.params.id);
 
-    if (!plant || plant.userId.toString() !== req.userId) {
-      return res.status(404).json({ message: 'Plant not found' });
+    if (!plant) {
+      return res.status(404).json({ message: "Plant not found" });
     }
-      // Check if the plant belongs to the logged-in user
+
+    // Authorization check: Ensure the plant belongs to the logged-in user
     if (plant.userId.toString() !== req.userId) {
-
-      return res.status(403).json({ message: 'Not authorized to update this plant' });
+      return res.status(403).json({ message: "Not authorized to update this plant" });
     }
-  
-    // Update status and health
+
+    // Update only fields provided in the request
     if (name) plant.name = name;
     if (species) plant.species = species;
     if (health) plant.health = health;
-    if (status) plant.status = status;
-    if (careSchedule) plant.careSchedule = { ...plant.careSchedule, ...careSchedule };
-  
+    if (lastWatered) plant.lastWatered = lastWatered;
+    if (lastFertilized) plant.lastFertilized = lastFertilized;
+    if (image) plant.image = image;
+
     const updatedPlant = await plant.save();
-    res.status(200).json({ message: 'Plant status updated', updatedPlant });
+    res.status(200).json(updatedPlant);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error updating plant:", error.message);
+    res.status(500).json({ message: "Server error. Please try again later." });
   }
 });
-  
-// delete plant
-router.delete('/:id', protect, async (req, res) => {
-  try {
-    const plant = await Plant.findById(req.params.id);
-    if (!plant || plant.userId.toString() !== req.userId) {
-      return res.status(404).json({ message: 'Plant not found' });
-    }
-    await plant.deleteOne();
-    res.status(200).json({ message: 'Plant deleted successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// overdue task
-// router.get('/overdue-tasks', protect, async (req, res) => {
-//   try {
-//     const plants = await Plant.find({ userId: req.userId, status: 'active' });
-
-//     const overdueTasks = plants.map((plant) => {
-//       const overdue = [];
-
-//       if (calculateOverdue(plant.careSchedule.watering.lastWatered, plant.careSchedule.watering.frequency)) {
-//         overdue.push('Watering');
-//       }
-
-//       if (calculateOverdue(plant.careSchedule.fertilizing.lastFertilized, plant.careSchedule.fertilizing.frequency)) {
-//         overdue.push('Fertilizing');
-//       }
-
-//       if (calculateOverdue(plant.careSchedule.pruning.lastPruned, '30 days')) {
-//         overdue.push('Pruning');
-//       }
-
-//       return {
-//         plantId: plant._id,
-//         plantName: plant.name,
-//         overdue,
-//       };
-//     });
-
-//     res.status(200).json(overdueTasks.filter((task) => task.overdue.length > 0));
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// });
-
 
 module.exports = router;

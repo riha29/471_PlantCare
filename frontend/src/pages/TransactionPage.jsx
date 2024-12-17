@@ -10,8 +10,8 @@ const TransactionPage = () => {
 
   const plants = [
     { id: 1, name: 'Aloe Vera', price: 10, image: 'images/kamil-kalkan-SA3KoWHuMzA-unsplash (1).jpg' },
-    { id: 2, name: 'Snake Plant', price: 15, image: 'https://via.placeholder.com/100' },
-    { id: 3, name: 'Peace Lily', price: 20, image: 'https://via.placeholder.com/100' },
+    { id: 2, name: 'Snake Plant', price: 15, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSU-g63ZDKWMmzZs6OQh70aWLGqy4EZ4Jdmgg&s' },
+    { id: 3, name: 'Peace Lily', price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgOePSBE5vzbUKA6qQkg8CTXlpCTUIUowKbA&s' },
   ];
 
   const addToCart = (plant) => {

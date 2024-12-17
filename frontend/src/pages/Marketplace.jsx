@@ -1,51 +1,34 @@
-import React, { useEffect, useState } from "react";
-import axios from "../api/axios";
+import React, { useContext } from "react";
+import { CartContext } from "../context/CartContext";
 
 const Marketplace = () => {
-  const [marketplaceItems, setMarketplaceItems] = useState([]);
+  const { addToCart } = useContext(CartContext);
 
-  // Function to fetch marketplace items
-  const fetchMarketplaceItems = async () => {
-    try {
-      const response = await axios.get("/api/marketplace"); // Backend endpoint
-      setMarketplaceItems(response.data); // Update state with fetched data
-    } catch (error) {
-      console.error("Error fetching marketplace items:", error);
-    }
-  };
-
-  // useEffect to call fetchMarketplaceItems on component load
-  useEffect(() => {
-    fetchMarketplaceItems();
-  }, []); // Empty dependency array ensures it runs only once
+  const products = [
+    { id: 1, name: "Snake Plant", description: "Low-maintenance plant", price: 25, image: "snake.jpg" },
+    { id: 2, name: "Aloe Vera", description: "Useful plant", price: 20, image: "aloe.jpg" },
+    { id: 3, name: "Peace Lily", description: "Air-purifying plant", price: 30, image: "lily.jpg" },
+  ];
 
   return (
     <div className="p-6 min-h-screen bg-green-50">
       <h1 className="text-3xl font-bold text-center mb-6">Marketplace</h1>
-
-      {/* Marketplace Items Grid */}
-      {marketplaceItems.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {marketplaceItems.map((item) => (
-            <div key={item._id} className="card bg-base-100 shadow-xl">
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-full h-48 object-cover"
-              />
-              <div className="card-body">
-                <h3 className="card-title text-lg font-semibold">{item.name}</h3>
-                <p className="text-gray-700">{item.description}</p>
-                <p className="text-green-600 font-bold">${item.price}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12">
-          <p className="text-lg text-gray-500">No items available in the marketplace. Check back soon!</p>
-        </div>
-      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {products.map((product) => (
+          <div key={product.id} className="card bg-white shadow-lg rounded-lg p-4">
+            <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+            <h3 className="text-lg font-bold mt-2">{product.name}</h3>
+            <p className="text-gray-700 mt-1">{product.description}</p>
+            <p className="text-green-600 font-semibold mt-2">${product.price}</p>
+            <button
+              className="bg-green-600 text-white px-4 py-2 rounded mt-4 hover:bg-green-700"
+              onClick={() => addToCart(product)}
+            >
+              Add to Cart
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
