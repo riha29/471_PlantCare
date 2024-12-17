@@ -6,7 +6,6 @@ const protect = async (req, res, next) => {
 
   try {
     token = req.headers.authorization?.split(" ")[1];
-
     if (!token) {
       console.log("Token missing in headers");
       return res.status(401).json({ message: "No token, authorization denied" });
@@ -14,8 +13,6 @@ const protect = async (req, res, next) => {
 
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded Token:", decoded);
-
     req.userId = decoded.id;
 
     // Attach user to the request (optional)

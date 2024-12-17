@@ -1,45 +1,61 @@
-// TransactionPage.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "../api/axios";
 
 const TransactionPage = () => {
+  const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]); // Array to store selected items
   const [totalPrice, setTotalPrice] = useState(0);
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
-  const plants = [
-    { id: 1, name: 'Aloe Vera', price: 10, image: 'images/kamil-kalkan-SA3KoWHuMzA-unsplash (1).jpg' },
-    { id: 2, name: 'Snake Plant', price: 15, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSU-g63ZDKWMmzZs6OQh70aWLGqy4EZ4Jdmgg&s' },
-    { id: 3, name: 'Peace Lily', price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgOePSBE5vzbUKA6qQkg8CTXlpCTUIUowKbA&s' },
-  ];
+  // Fetch marketplace products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("/marketplace"); // Assuming /api/products route
+        setProducts(response.data);
+      } catch (err) {
+        setError(err.response?.data?.message || "Failed to fetch products");
+      }
+    };
+    fetchProducts();
+  }, []);
 
-  const addToCart = (plant) => {
-    setCart([...cart, plant]);
-    setTotalPrice(totalPrice + plant.price);
+  const addToCart = (product) => {
+    setCart([...cart, product]);
+    setTotalPrice(totalPrice + product.price);
   };
 
   const handleCheckout = () => {
-    // Handle checkout logic here
-    alert('Transaction Successful!');
+    alert("Transaction Successful!");
     setCart([]);
     setTotalPrice(0);
-    navigate('/profile');
+    navigate("/profile");
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-green-50">
       <div className="max-w-4xl w-full bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-green-800 text-center">Marketplace</h2>
+        
+        {/* Display Fetch Error */}
+        {error && <p className="text-red-500 text-center">{error}</p>}
 
+        {/* Marketplace Products */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-          {plants.map((plant) => (
-            <div key={plant.id} className="border border-green-300 rounded-md p-4 text-center">
-              <img src={plant.image} alt={plant.name} className="w-24 h-24 mx-auto" />
-              <h3 className="mt-2 font-semibold text-green-800">{plant.name}</h3>
-              <p className="text-green-700">${plant.price}</p>
+          {products.map((product) => (
+            <div key={product._id} className="border border-green-300 rounded-md p-4 text-center">
+              <img
+                src={product.image || "/placeholder.jpg"}
+                alt={product.name}
+                className="w-24 h-24 mx-auto"
+              />
+              <h3 className="mt-2 font-semibold text-green-800">{product.name}</h3>
+              <p className="text-green-700">${product.price}</p>
               <button
-                onClick={() => addToCart(plant)}
+                onClick={() => addToCart(product)}
                 className="mt-2 bg-green-600 text-white py-1 px-4 rounded hover:bg-green-700 transition"
               >
                 Add to Cart
@@ -48,6 +64,7 @@ const TransactionPage = () => {
           ))}
         </div>
 
+        {/* Cart Summary */}
         <div className="mt-8 border-t pt-4">
           <h3 className="text-lg font-bold text-green-800">Cart Summary</h3>
           {cart.length > 0 ? (
