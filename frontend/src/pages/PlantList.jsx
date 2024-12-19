@@ -12,7 +12,7 @@ const PlantList = () => {
     const fetchPlants = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const response = await axios.get("/api/plants", {
+        const response = await axios.get("/plants", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPlants(response.data);

@@ -12,7 +12,7 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/users/signin', { email, password });
+      const response = await axios.post('/signin', { email, password });
       const { token } = response.data;
 
       localStorage.setItem('authToken', token);

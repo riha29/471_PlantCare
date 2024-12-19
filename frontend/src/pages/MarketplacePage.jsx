@@ -26,6 +26,8 @@ const MarketplacePage = () => {
 
   const handleMockCheckout = async () => {
     try {
+      console.log("Cart data being sent:", cart); // Debug log
+
       const response = await axios.post("/api/checkout/mock-checkout", {
         cartItems: cart,
       });
@@ -38,7 +40,10 @@ const MarketplacePage = () => {
         setTotalPrice(0);
       }
     } catch (error) {
-      console.error("Error during mock checkout:", error.message);
+      console.error(
+        "Error during mock checkout:",
+        error.response?.data || error.message
+      );
       alert("Failed to process the transaction.");
     }
   };
