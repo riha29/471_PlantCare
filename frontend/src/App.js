@@ -2,13 +2,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import UserProfile from './pages/UserProfile';
-import PlantList from './components/PlantList';
 import PlantProfile from './pages/PlantProfile';
 import EditPlantProfile from './pages/EditPlantProfile';
 import ResearchWork from './pages/ResearchWork';
 import VideoTutorials from './pages/VideoTutorials';
 import Home from './pages/Home';
 import MarketplacePage from './pages/MarketplacePage';
+import PlantList from './pages/PlantList';
 
 function App() {
   return (
@@ -24,6 +24,7 @@ function App() {
           <Route path="/research-work" element={<ResearchWork />} />
           <Route path="/video-tutorials" element={<VideoTutorials/>} />
           <Route path='/marketplace' element={<MarketplacePage/>}/>
+          <Route path="/plants" element={<PlantList />} />
         </Routes>
       </Router>
   );

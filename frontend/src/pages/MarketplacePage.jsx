@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
 import axios from "../api/axios";
-import { Link } from 'react-router-dom'; 
-
-const stripePromise = loadStripe("your-publishable-key-here");
 
 const MarketplacePage = () => {
   const [cart, setCart] = useState([]);
@@ -28,41 +24,27 @@ const MarketplacePage = () => {
     setTotalPrice((prevTotal) => prevTotal + plant.price);
   };
 
-  const handleCheckout = async () => {
+  const handleMockCheckout = async () => {
     try {
-      await stripePromise;
-
-      const response = await axios.post("/api/checkout/create-checkout-session", {
+      const response = await axios.post("/api/checkout/mock-checkout", {
         cartItems: cart,
       });
 
-      if (response.data.url) {
-        window.location.href = response.data.url; // Redirect to Stripe Checkout
+      if (response.data) {
+        alert(
+          `Payment successful! Transaction ID: ${response.data.transactionId}, Total: $${response.data.totalAmount}`
+        );
+        setCart([]); // Clear cart after successful payment
+        setTotalPrice(0);
       }
     } catch (error) {
-      console.error("Error during checkout:", error.message);
-      alert("Failed to initiate checkout.");
+      console.error("Error during mock checkout:", error.message);
+      alert("Failed to process the transaction.");
     }
   };
 
   return (
-    <div>
-      <nav className="bg-green-900 pt-4 text-white">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <h1 className="text-xl font-bold">
-            <Link to="/">Plant Care</Link>
-          </h1>
-          <div className="flex space-x-4">
-            <Link to="/home" className="hover:underline">Home</Link>
-            <Link to="/research-work" className="hover:underline">Research</Link>
-            <Link to="/video-tutorials" className="hover:underline">Tutorials</Link>
-            <Link to="/plants" className="hover:underline">Plants</Link>
-            <Link to="/marketplace" className="hover:underline">MarketplacePage</Link>
-            <Link to="/profile" className="hover:underline">User</Link>
-          </div>
-        </div>
-      </nav>
-      <div className="flex min-h-screen bg-green-50">
+    <div className="flex min-h-screen bg-green-50">
       {/* Marketplace */}
       <div className="flex-1 p-6">
         <h2 className="text-2xl font-bold text-green-800 text-center">Marketplace</h2>
@@ -100,7 +82,7 @@ const MarketplacePage = () => {
             </ul>
             <p className="mt-4 font-bold text-green-800">Total: ${totalPrice}</p>
             <button
-              onClick={handleCheckout}
+              onClick={handleMockCheckout}
               className="mt-4 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition w-full"
             >
               Checkout
@@ -111,8 +93,6 @@ const MarketplacePage = () => {
         )}
       </div>
     </div>
-    </div>
-    
   );
 };
 
