@@ -9,6 +9,8 @@ import VideoTutorials from './pages/VideoTutorials';
 import Home from './pages/Home';
 import MarketplacePage from './pages/MarketplacePage';
 import PlantList from './pages/PlantList';
+import TransactionPage from "./pages/TransactionPage";
+
 
 function App() {
   return (
@@ -24,7 +26,7 @@ function App() {
           <Route path="/research-work" element={<ResearchWork />} />
           <Route path="/video-tutorials" element={<VideoTutorials/>} />
           <Route path='/marketplace' element={<MarketplacePage/>}/>
-          <Route path="/plants" element={<PlantList />} />
+          <Route path="/transaction" element={<TransactionPage />} />
         </Routes>
       </Router>
   );

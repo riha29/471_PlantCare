@@ -2,33 +2,28 @@ const express = require("express");
 const router = express.Router();
 
 // Mock Checkout Endpoint
-router.post("/mock-checkout", async (req, res) => {
-  try {
-    const { cartItems } = req.body;
+router.post("/transaction", async (req, res) => {
+  const { paymentMethod, address } = req.body;
 
-    if (!cartItems || cartItems.length === 0) {
-      return res.status(400).json({ message: "Cart is empty" });
+  try {
+    if (!paymentMethod || !address ) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Calculate total amount
-    const totalAmount = cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+    if (paymentMethod === "cash_on_delivery") {
+      // Simulate placing an order for Cash on Delivery
+      console.log("Processing Cash on Delivery...");
+      // Save the order to the database if necessary (optional)
+    } else {
+      return res.status(400).json({ message: "Invalid payment method for this endpoint" });
+    }
 
-    // Generate a mock transaction ID
-    const transactionId = `TRANS_${Date.now()}`;
-
-    // Respond with a mock transaction result
-    res.status(200).json({
-      message: "Transaction successful",
-      transactionId,
-      totalAmount,
-    });
+    res.status(200).json({ message: "Order placed successfully!" });
   } catch (error) {
-    console.error("Error during mock checkout:", error.message);
-    res.status(500).json({ message: "Server error during mock checkout" });
+    console.error("Error processing order:", error.message);
+    res.status(500).json({ message: "Server error. Please try again later." });
   }
 });
+
 
 module.exports = router;

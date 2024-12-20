@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import axios from "../api/axios";
+// import axios from "../api/axios";
+import { Link } from 'react-router-dom'; 
 
 const MarketplacePage = () => {
   const [cart, setCart] = useState([]);
@@ -24,29 +25,27 @@ const MarketplacePage = () => {
     setTotalPrice((prevTotal) => prevTotal + plant.price);
   };
 
-  const handleMockCheckout = async () => {
-    try {
-      console.log("Cart data being sent:", cart); // Debug log
+  // const handleMockCheckout = async () => {
+  //   try {
+  //     const response = await axios.post("/transaction", {
+  //       cartItems: cart,
+  //     });
 
-      const response = await axios.post("/api/checkout/mock-checkout", {
-        cartItems: cart,
-      });
-
-      if (response.data) {
-        alert(
-          `Payment successful! Transaction ID: ${response.data.transactionId}, Total: $${response.data.totalAmount}`
-        );
-        setCart([]); // Clear cart after successful payment
-        setTotalPrice(0);
-      }
-    } catch (error) {
-      console.error(
-        "Error during mock checkout:",
-        error.response?.data || error.message
-      );
-      alert("Failed to process the transaction.");
-    }
-  };
+  //     if (response.data) {
+  //       alert(
+  //         `Payment successful! Transaction ID: ${response.data.transactionId}, Total: $${response.data.totalAmount}`
+  //       );
+  //       setCart([]); // Clear cart after successful payment
+  //       setTotalPrice(0);
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       "Error during mock checkout:",
+  //       error.response?.data || error.message
+  //     );
+  //     alert("Failed to process the transaction.");
+  //   }
+  // };
 
   return (
     <div className="flex min-h-screen bg-green-50">
@@ -86,12 +85,17 @@ const MarketplacePage = () => {
               ))}
             </ul>
             <p className="mt-4 font-bold text-green-800">Total: ${totalPrice}</p>
-            <button
-              onClick={handleMockCheckout}
-              className="mt-4 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition w-full"
-            >
-              Checkout
-            </button>
+            
+            <h1>
+              <Link
+                to="/transaction"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Checkout
+              </Link>
+            </h1>
+              
+            
           </div>
         ) : (
           <p className="text-green-700">Your cart is empty.</p>

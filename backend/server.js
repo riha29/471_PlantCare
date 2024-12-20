@@ -9,6 +9,7 @@ const marketplaceRoutes = require("./routes/marketPlaceRoutes");
 const productRoutes = require("./routes/productRoutes");
 const checkoutRoutes = require("./routes/checkoutRoutes");
 const Plant = require("./models/plant");
+const transactionRoutes = require('./routes/transactionRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -27,6 +28,7 @@ app.use('/api/plants', plantRoutes);
 app.use("/api/marketplace", marketplaceRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/checkout", checkoutRoutes);
+app.use("/api", transactionRoutes); 
 
 // Schedule the task to run daily at midnight
 cron.schedule("0 0 * * *", async () => {
