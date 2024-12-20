@@ -20,7 +20,6 @@ const protect = async (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({ message: "User not found" });
     }
-    console.log("User attached to request:", req.user);
     next();
   } catch (error) {
     console.error("Token verification failed:", error.message);

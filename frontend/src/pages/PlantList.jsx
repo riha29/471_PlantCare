@@ -16,15 +16,16 @@ const PlantList = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPlants(response.data);
-        generateNotifications(response.data); // Generate notifications
+        generateNotifications(response.data);
       } catch (err) {
         console.error("Error fetching plants:", err);
-        setError("Failed to fetch plants");
+        setError("Failed to fetch plants. Please try again.");
       }
     };
-
+  
     fetchPlants();
   }, []);
+  
 
   // Add a new plant
   const handleAddPlant = async () => {
@@ -32,21 +33,23 @@ const PlantList = () => {
       alert("Please provide both name and species for the plant.");
       return;
     }
-
+  
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.post(
-        "/api/plants",
+        "/plants", // Corrected endpoint
         newPlant,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setPlants([...plants, response.data]); // Add new plant to the list
       setNewPlant({ name: "", species: "" }); // Reset form
+      setError(""); // Clear any previous errors
     } catch (err) {
       console.error("Error adding plant:", err);
-      setError("Failed to add plant");
+      setError("Failed to add plant. Please ensure all fields are correct.");
     }
   };
+  
 
   // Remove a plant
   const handleRemovePlant = async (id) => {
@@ -99,33 +102,62 @@ const PlantList = () => {
       )}
 
       {/* Add Plant Form */}
-      <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md mb-6">
-        <h2 className="text-xl font-bold mb-4">Add a New Plant</h2>
-        <div className="mb-4">
-          <label className="block text-gray-700">Plant Name</label>
-          <input
-            type="text"
-            value={newPlant.name}
-            onChange={(e) => setNewPlant({ ...newPlant, name: e.target.value })}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Species</label>
-          <input
-            type="text"
-            value={newPlant.species}
-            onChange={(e) => setNewPlant({ ...newPlant, species: e.target.value })}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <button
-          onClick={handleAddPlant}
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-        >
-          Add Plant
-        </button>
-      </div>
+      {/* Add Plant Form */}
+<div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md mb-6">
+  <h2 className="text-xl font-bold mb-4">Add a New Plant</h2>
+  <div className="mb-4">
+    <label className="block text-gray-700">Plant Name</label>
+    <input
+      type="text"
+      value={newPlant.name}
+      onChange={(e) => setNewPlant({ ...newPlant, name: e.target.value })}
+      className="w-full p-2 border rounded"
+    />
+  </div>
+  <div className="mb-4">
+    <label className="block text-gray-700">Species</label>
+    <input
+      type="text"
+      value={newPlant.species}
+      onChange={(e) => setNewPlant({ ...newPlant, species: e.target.value })}
+      className="w-full p-2 border rounded"
+    />
+  </div>
+  <div className="mb-4">
+    <label className="block text-gray-700">Health</label>
+    <input
+      type="text"
+      value={newPlant.health || ""}
+      onChange={(e) => setNewPlant({ ...newPlant, health: e.target.value })}
+      className="w-full p-2 border rounded"
+    />
+  </div>
+  <div className="mb-4">
+    <label className="block text-gray-700">Last Watered (Optional)</label>
+    <input
+      type="date"
+      value={newPlant.lastWatered || ""}
+      onChange={(e) => setNewPlant({ ...newPlant, lastWatered: e.target.value })}
+      className="w-full p-2 border rounded"
+    />
+  </div>
+  <div className="mb-4">
+    <label className="block text-gray-700">Last Fertilized (Optional)</label>
+    <input
+      type="date"
+      value={newPlant.lastFertilized || ""}
+      onChange={(e) => setNewPlant({ ...newPlant, lastFertilized: e.target.value })}
+      className="w-full p-2 border rounded"
+    />
+  </div>
+  <button
+    onClick={handleAddPlant}
+    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+  >
+    Add Plant
+  </button>
+</div>
+
 
       {/* Plant List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
