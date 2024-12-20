@@ -13,7 +13,7 @@ const VideoTutorials = ({ navigate }) => {
 
   return (
     <div className="p-6">
-      <nav className="bg-green-900 mb-12 -m-8 pt-8 text-white">
+      <nav className="bg-green-900 -m-8 pt-8 text-white">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <h1 className="text-xl font-bold">
             <Link to="/">Plant Care</Link>
