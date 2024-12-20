@@ -98,12 +98,14 @@ router.delete("/:id", protect, async (req, res) => {
       return res.status(403).json({ message: "Not authorized to delete this plant" });
     }
 
-    await plant.remove();
+    // Use deleteOne instead of remove
+    await Plant.deleteOne({ _id: req.params.id });
     res.status(200).json({ message: "Plant removed successfully" });
   } catch (error) {
     console.error("Error deleting plant:", error.message);
     res.status(500).json({ message: "Server error. Please try again later." });
   }
 });
+
 
 module.exports = router;
