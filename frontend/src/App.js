@@ -6,17 +6,18 @@ import PlantProfile from './pages/PlantProfile';
 import EditPlantProfile from './pages/EditPlantProfile';
 import ResearchWork from './pages/ResearchWork';
 import VideoTutorials from './pages/VideoTutorials';
-import Home from './pages/Home';
 import MarketplacePage from './pages/MarketplacePage';
 import PlantList from './pages/PlantList';
 import TransactionPage from "./pages/TransactionPage";
+import DashboardPage from "./pages/DashboardPage";
+
 
 
 function App() {
   return (
       <Router>
         <Routes>
-          <Route path='/home' element={<Home/>} />
+          <Route path='/home' element={<DashboardPage />} />
           <Route path="/signin" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/profile" element={<UserProfile />} /> 

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 const UserProfile = () => {
   const [user, setUser] = useState({});
   const [isEditing, setIsEditing] = useState(false);
+  const [sharedPosts] = useState([]);
 
   const updateUser = (updatedUser) => {
     setUser(updatedUser);
@@ -85,6 +86,26 @@ const UserProfile = () => {
           </div>
         </div>
       </div>
+
+      {/*shared post */}
+      <h2 className="text-xl font-bold mt-4">Shared Posts</h2>
+      {sharedPosts.length > 0 ? (
+        sharedPosts.map((post) => (
+          <div key={post._id} className="bg-white p-4 rounded-lg shadow mb-4">
+            <h3 className="font-bold">{post.userId.name}</h3>
+            {post.photo && (
+              <img
+                src={post.photo}
+                alt="Shared Post"
+                className="w-full h-48 object-cover mt-2"
+              />
+            )}
+            <p className="mt-2">{post.text}</p>
+          </div>
+        ))
+      ) : (
+        <p>No shared posts yet.</p>
+      )}
     </div>
   );
 };
