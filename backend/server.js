@@ -21,17 +21,20 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({ 
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 app.use(express.json()); // Parse incoming JSON requests
 
 // Routes
-app.use('/users', userRoutes);
-app.use('/plants', plantRoutes);
-app.use("/marketplace", marketplaceRoutes);
-app.use("/products", productRoutes);
-app.use("/checkout", checkoutRoutes);
-app.use("/", transactionRoutes); 
-app.use("/posts", postRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/plants', plantRoutes);
+app.use("/api/marketplace", marketplaceRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/checkout", checkoutRoutes);
+app.use("/api/", transactionRoutes); 
+app.use("/api/posts", postRoutes);
 
 // Schedule the task to run daily at midnight
 cron.schedule("0 0 * * *", async () => {

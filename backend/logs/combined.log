@@ -1,0 +1,14 @@
+2024-12-23T05:41:55.268Z [INFO]: MongoDB Connected: plantcare471-shard-00-01.ercvh.mongodb.net
+2024-12-23T05:45:12.354Z [INFO]: MongoDB Connected: plantcare471-shard-00-00.ercvh.mongodb.net
+2024-12-23T07:09:18.190Z [INFO]: MongoDB Connected: plantcare471-shard-00-00.ercvh.mongodb.net
+2024-12-23T07:23:30.835Z [INFO]: Mongoose disconnected from DB
+2024-12-23T07:23:30.846Z [INFO]: Mongoose connected to DB
+2024-12-23T07:26:31.751Z [INFO]: Mongoose disconnected from DB
+2024-12-23T07:26:42.653Z [INFO]: Mongoose connected to DB
+2024-12-23T07:35:53.392Z [INFO]: Mongoose disconnected from DB
+2024-12-23T07:35:54.720Z [INFO]: Mongoose connected to DB
+2024-12-23T07:36:03.226Z [INFO]: MongoDB Connected: plantcare471-shard-00-01.ercvh.mongodb.net
+2024-12-23T07:52:32.138Z [INFO]: MongoDB Connected: plantcare471-shard-00-00.ercvh.mongodb.net
+2024-12-23T08:02:43.209Z [INFO]: Mongoose disconnected from DB
+2024-12-23T08:02:43.304Z [INFO]: Mongoose connected to DB
+2024-12-23T08:03:27.955Z [INFO]: MongoDB Connected: plantcare471-shard-00-00.ercvh.mongodb.net
