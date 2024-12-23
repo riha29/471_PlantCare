@@ -25,28 +25,6 @@ const MarketplacePage = () => {
     setTotalPrice((prevTotal) => prevTotal + plant.price);
   };
 
-  // const handleMockCheckout = async () => {
-  //   try {
-  //     const response = await axios.post("/transaction", {
-  //       cartItems: cart,
-  //     });
-
-  //     if (response.data) {
-  //       alert(
-  //         `Payment successful! Transaction ID: ${response.data.transactionId}, Total: $${response.data.totalAmount}`
-  //       );
-  //       setCart([]); // Clear cart after successful payment
-  //       setTotalPrice(0);
-  //     }
-  //   } catch (error) {
-  //     console.error(
-  //       "Error during mock checkout:",
-  //       error.response?.data || error.message
-  //     );
-  //     alert("Failed to process the transaction.");
-  //   }
-  // };
-
   return (
     <div>
       <nav className="bg-green-900 -m-8 pt-8 text-white">

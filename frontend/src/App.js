@@ -10,8 +10,7 @@ import MarketplacePage from './pages/MarketplacePage';
 import PlantList from './pages/PlantList';
 import TransactionPage from "./pages/TransactionPage";
 import DashboardPage from "./pages/DashboardPage";
-
-
+import PlantCareSession from './pages/PlantCareSession';
 
 function App() {
   return (
@@ -28,6 +27,7 @@ function App() {
           <Route path="/video-tutorials" element={<VideoTutorials/>} />
           <Route path='/marketplace' element={<MarketplacePage/>}/>
           <Route path="/transaction" element={<TransactionPage />} />
+          <Route path='/session' element={<PlantCareSession/>}/>
         </Routes>
       </Router>
   );

@@ -17,7 +17,6 @@ const SignUpPage = () => {
       const { token } = response.data;
 
       localStorage.setItem('authToken', token);
-
       navigate('/signin');
     } catch (error) {
       setMessage(error.response?.data?.message || 'Signup failed');

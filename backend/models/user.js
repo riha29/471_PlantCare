@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Schema, model } = require('mongoose');
+const { Schema } = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 // User Schema
@@ -23,6 +23,11 @@ const userSchema = Schema({
       ref: "Post",
     },
   ],
+  preferences: {
+    eventNotifications: { type: Boolean, default: true },
+    featureUpdates: { type: Boolean, default: true },
+  },
+
 }, {
   timestamps: true,
 });
