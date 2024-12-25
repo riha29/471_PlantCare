@@ -1,7 +1,6 @@
 {
   "name": "riha",
   "version": "ok",
-  "private": null,
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@stripe/stripe-js": "^5.3.0",

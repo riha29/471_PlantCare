@@ -7,7 +7,7 @@ const protect= require('../middleware/authMiddleware');
 const { log } = require('winston');
 
 // User Signup
-router.post('baseURL/signup', async (req, res) => {
+router.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
   console.log('backend hitssss');
   
@@ -40,7 +40,7 @@ router.post('baseURL/signup', async (req, res) => {
 });
 
 // User Signin
-router.post('/users/signin', async (req, res) => {
+router.post('/signin', async (req, res) => {
   const { email, password } = req.body;
 
   try {
