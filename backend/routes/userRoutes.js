@@ -7,7 +7,7 @@ const protect= require('../middleware/authMiddleware');
 const { log } = require('winston');
 
 // User Signup
-router.post('users/signup', async (req, res) => {
+router.post('baseURL/signup', async (req, res) => {
   const { name, email, password } = req.body;
   console.log('backend hitssss');
   

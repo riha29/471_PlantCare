@@ -3,14 +3,15 @@ const cors = require('cors');
 const cron = require("node-cron")
 const connectDB = require('./config/db');
 const dotenv = require('dotenv');
+
 const userRoutes = require('./routes/userRoutes');
 const plantRoutes = require('./routes/plantRoutes');
 const marketplaceRoutes = require("./routes/marketPlaceRoutes");
 const productRoutes = require("./routes/productRoutes");
 const checkoutRoutes = require("./routes/checkoutRoutes");
-const Plant = require("./models/plant");
 const transactionRoutes = require('./routes/transactionRoutes');
 const postRoutes = require("./routes/postRoutes");
+const Plant = require("./models/plant");
 
 
 // Load environment variables
