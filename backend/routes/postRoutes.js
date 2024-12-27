@@ -5,7 +5,6 @@ const router = express.Router();
 
 // Create a new post
 router.post("/", protect, async (req, res) => {
-    console.log("Creating post with data:", req.body); // Debug log
     try {
       const { text, photo } = req.body;
       if (!text) {
@@ -14,7 +13,6 @@ router.post("/", protect, async (req, res) => {
   
       const post = new Post({ userId: req.userId, text, photo });
       const savedPost = await post.save();
-      console.log("Post created:", savedPost); // Debug log
       res.status(201).json(savedPost);
     } catch (err) {
       console.error("Error creating post:", err.message);
