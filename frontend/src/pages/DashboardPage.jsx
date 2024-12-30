@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "../api/axios";
-import { Link } from 'react-router-dom'; 
+import { FaThumbsUp, FaShare } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const DashboardPage = () => {
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState({ text: "", photo: "" });
   const [error, setError] = useState("");
-  const [commentText, setCommentText] = useState({}); // To track comments for each post
+  const [commentText, setCommentText] = useState({});
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -29,7 +30,7 @@ const DashboardPage = () => {
       setError("Text is required to create a post");
       return;
     }
-  
+
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.post(
@@ -37,14 +38,14 @@ const DashboardPage = () => {
         newPost,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setPosts([response.data, ...posts]); // Add the new post to the list
+      setPosts([response.data, ...posts]);
       setNewPost({ text: "", photo: "" });
     } catch (err) {
       console.error("Error creating post:", err.response?.data || err.message);
       setError("Failed to create post");
     }
   };
-  
+
   const handleLikePost = async (postId) => {
     try {
       const token = localStorage.getItem("authToken");
@@ -63,7 +64,7 @@ const DashboardPage = () => {
   };
 
   const handleAddComment = async (postId) => {
-    const comment = commentText[postId]; // Get the comment text for the post
+    const comment = commentText[postId];
     if (!comment) return;
 
     try {
@@ -76,7 +77,7 @@ const DashboardPage = () => {
       setPosts((prev) =>
         prev.map((post) => (post._id === postId ? response.data : post))
       );
-      setCommentText((prev) => ({ ...prev, [postId]: "" })); // Clear the comment input for this post
+      setCommentText((prev) => ({ ...prev, [postId]: "" }));
     } catch (err) {
       console.error(err);
       setError("Failed to add comment");
@@ -97,10 +98,9 @@ const DashboardPage = () => {
       setError("Failed to share post");
     }
   };
-  
 
   return (
-    <div className="p-6 min-h-screen bg-green-50">
+    <div className="p-6 min-h-screen bg-gray-100">
       <nav className="bg-green-900 -m-8 pt-8 text-white">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <h1 className="text-xl font-bold">
@@ -116,93 +116,103 @@ const DashboardPage = () => {
           </div>
         </div>
       </nav>
-      <h1 className="text-3xl font-bold text-center mt-16 mb-6">Dashboard</h1>
-  
+
       {/* New Post Form */}
-      <div className="mb-6">
-        <textarea
-          placeholder="Write something..."
-          value={newPost.text}
-          onChange={(e) => setNewPost({ ...newPost, text: e.target.value })}
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="Photo URL (optional)"
-          value={newPost.photo}
-          onChange={(e) => setNewPost({ ...newPost, photo: e.target.value })}
-          className="w-full p-2 border rounded mt-2"
-        />
-        <button
-          onClick={handleCreatePost}
-          className="bg-green-600 text-white px-4 py-2 rounded mt-2"
-        >
-          Post
-        </button>
+      <div className="flex items-center mt-20 justify-center mb-6">
+        <div className="bg-white shadow-lg rounded-lg p-4 flex space-x-4 items-center w-3/4">
+          <textarea
+            placeholder="Write something..."
+            value={newPost.text}
+            onChange={(e) => setNewPost({ ...newPost, text: e.target.value })}
+            className="flex-grow p-2 border rounded"
+          />
+          <input
+            type="text"
+            placeholder="Photo URL (optional)"
+            value={newPost.photo}
+            onChange={(e) => setNewPost({ ...newPost, photo: e.target.value })}
+            className="p-2 border rounded"
+          />
+          <button
+            onClick={handleCreatePost}
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            Post
+          </button>
+        </div>
       </div>
-  
+
       {/* Posts */}
-      {posts.map((post) => (
-        <div key={post._id} className="bg-white p-4 rounded-lg shadow mb-4">
-          <h3 className="font-bold">{post.userId?.name || "Unknown User"}</h3>
-          {post.photo && (
-            <img
-              src={post.photo}
-              alt="Post"
-              className="w-full h-48 object-cover mt-2"
-            />
-          )}
-          <p className="mt-2">{post.text}</p>
-          <div className="flex justify-between items-center mt-4">
-            <button
-              onClick={() => handleLikePost(post._id)}
-              className={`px-4 py-2 rounded ${
-                post.likes.includes("loggedInUserId")
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-300"
-              }`}
-            >
-              {post.likes.length} Likes
-            </button>
-            <button
-              onClick={() => handleSharePost(post._id)}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Share
-            </button>
-            <div className="flex items-center space-x-2">
-              <input
-                type="text"
-                placeholder="Write a comment..."
-                value={commentText[post._id] || ""}
-                onChange={(e) =>
-                  setCommentText({ ...commentText, [post._id]: e.target.value })
-                }
-                className="w-full p-2 border rounded"
-              />
-              <button
-                onClick={() => handleAddComment(post._id, commentText[post._id])}
-                className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-              >
-                Add
-              </button>
+      <div className="flex flex-col items-center">
+        {posts.map((post) => (
+          <div key={post._id} className="bg-white shadow-lg rounded-lg mb-6 w-2/3">
+            <div className="p-4">
+              <div className="flex items-center mb-2">
+                <img
+                  src={"https://via.placeholder.com/40"}
+                  alt="User"
+                  className="w-10 h-10 rounded-full"
+                />
+                <div className="ml-4">
+                  <h3 className="font-bold">{post.userId?.name || "Unknown User"}</h3>
+                  <p className="text-sm text-gray-500">Just now</p>
+                </div>
+              </div>
+              {post.photo && (
+                <div className="w-full flex justify-center">
+                  <img
+                    src={post.photo}
+                    alt="Post"
+                    className="w-auto h-64 object-cover mt-4 rounded-lg"
+                  />
+                </div>
+              )}
+              <p className="mt-4">{post.text}</p>
+              <div className="flex items-center justify-between mt-4 px-2">
+                <button
+                  onClick={() => handleLikePost(post._id)}
+                  className="text-blue-500 hover:text-blue-700 flex items-center space-x-2"
+                >
+                  <FaThumbsUp /> <span>{post.likes.length} Likes</span>
+                </button>
+                <button
+                  onClick={() => handleSharePost(post._id)}
+                  className="text-blue-500 hover:text-blue-700 flex items-center space-x-2"
+                >
+                  <FaShare /> <span>Share</span>
+                </button>
+              </div>
+              <div className="mt-4">
+                {post.comments.map((comment, index) => (
+                  <p key={index} className="text-sm bg-gray-100 p-2 rounded-lg mb-2">
+                    <strong>{comment.userId?.name || "Anonymous"}:</strong> {comment.text}
+                  </p>
+                ))}
+              </div>
+              <div className="flex items-center mt-4">
+                <input
+                  type="text"
+                  placeholder="Write a comment..."
+                  value={commentText[post._id] || ""}
+                  onChange={(e) =>
+                    setCommentText({ ...commentText, [post._id]: e.target.value })
+                  }
+                  className="w-full p-2 border rounded"
+                />
+                <button
+                  onClick={() => handleAddComment(post._id)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded ml-2 hover:bg-blue-600"
+                >
+                  Add Comment
+                </button>
+              </div>
             </div>
           </div>
-  
-          {/* Comments */}
-          <div className="mt-4">
-            {post.comments.map((comment, index) => (
-              <p key={index}>
-                <strong>{comment.userId?.name || "Anonymous"}:</strong> {comment.text}
-              </p>
-            ))}
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
       {error && <p className="text-red-500">{error}</p>}
     </div>
   );
-  
 };
 
 export default DashboardPage;

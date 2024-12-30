@@ -4,21 +4,17 @@ const bcrypt = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
 const router = express.Router();
 const protect= require('../middleware/authMiddleware');
-const { log } = require('winston');
 
 // User Signup
 router.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
-  console.log('backend hitssss');
   
-
   try {
     // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
     }
-
     // Create a new user
     const user = new User({ name, email, password });
 
@@ -84,7 +80,6 @@ router.get('/profile', protect, async (req, res) => {
   }
 });
 
-
 // Update Profile: Name, Email, Password
 router.put('/update-profile', protect, async (req, res) => {
   const { name, email, password } = req.body;
@@ -114,7 +109,6 @@ router.put('/update-profile', protect, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 
 module.exports = router;
