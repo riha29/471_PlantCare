@@ -12,6 +12,7 @@ const plantSchema = new mongoose.Schema(
     waterInterval: { type: Number, default: 7 }, // in days
     fertilizeInterval: { type: Number, default: 30 }, // in days
     pruneInterval: { type: Number, default: 90 }, // in days
+    imageUrl: { type: String }, // New field for storing the plant's image URL
   },
   { timestamps: true }
 );

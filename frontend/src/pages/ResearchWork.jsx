@@ -42,7 +42,7 @@ const ResearchWork = () => {
           </div>
         </div>
       </nav>
-      <h1 className="text-3xl pb-8 font-bold text-green-800 text-center my-8">Plant Related Research Works</h1>
+      <h1 className="text-3xl pb-8 font-bold text-green-800 text-center mt-20">Plant Related Research Works</h1>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {researchWorks.map((research, index) => (

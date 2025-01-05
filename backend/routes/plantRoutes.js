@@ -2,6 +2,7 @@ const express = require("express");
 const Plant = require("../models/plant");
 const protect = require("../middleware/authMiddleware");
 const mongoose = require("mongoose");
+const multer = require("../config/multerConfig"); // Import multer configuration
 const router = express.Router();
 
 // Fetch all plants of the logged-in user
@@ -15,9 +16,9 @@ router.get("/", protect, async (req, res) => {
   }
 });
 
-// Add a new plant
-router.post("/", protect, async (req, res) => {
-  const { name, species, health, lastWatered, lastFertilized, image } = req.body;
+// Add a new plant (with image upload)
+router.post("/", protect, multer.single("image"), async (req, res) => {
+  const { name, species, health, lastWatered, lastFertilized } = req.body;
 
   if (!name || !species) {
     return res.status(400).json({ message: "Name and species are required" });
@@ -31,7 +32,7 @@ router.post("/", protect, async (req, res) => {
       health: health || "Healthy",
       lastWatered,
       lastFertilized,
-      image,
+      imageUrl: req.file ? `/uploads/${req.file.filename}` : null, // Save the image URL
     });
 
     const savedPlant = await newPlant.save();
@@ -42,10 +43,10 @@ router.post("/", protect, async (req, res) => {
   }
 });
 
-// Update Plant Information
-router.put("/:id", protect, async (req, res) => {
+// Update Plant Information (with image upload)
+router.put("/:id", protect, multer.single("image"), async (req, res) => {
   try {
-    const { name, species, health, lastWatered, lastFertilized, image } = req.body;
+    const { name, species, health, lastWatered, lastFertilized } = req.body;
 
     // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -69,7 +70,7 @@ router.put("/:id", protect, async (req, res) => {
     if (health) plant.health = health;
     if (lastWatered) plant.lastWatered = lastWatered;
     if (lastFertilized) plant.lastFertilized = lastFertilized;
-    if (image) plant.image = image;
+    if (req.file) plant.imageUrl = `/uploads/${req.file.filename}`; // Update the image if provided
 
     const updatedPlant = await plant.save();
     res.status(200).json(updatedPlant);
@@ -106,6 +107,5 @@ router.delete("/:id", protect, async (req, res) => {
     res.status(500).json({ message: "Server error. Please try again later." });
   }
 });
-
 
 module.exports = router;

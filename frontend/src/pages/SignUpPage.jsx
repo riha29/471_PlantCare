@@ -17,7 +17,7 @@ const SignUpPage = () => {
       const { token } = response.data;
 
       localStorage.setItem('authToken', token);
-      navigate('/signin');
+      navigate('/');
     } catch (error) {
       setMessage(error.response?.data?.message || 'Signup failed');
     }
@@ -80,7 +80,7 @@ const SignUpPage = () => {
       <div className="text-center mt-4">
         <p className="text-sm text-gray-700">
           Already have an account?{' '}
-          <Link to="/signin" className="text-blue-500 font-semibold">
+          <Link to="/" className="text-blue-500 font-semibold">
             Login
           </Link>
         </p>
