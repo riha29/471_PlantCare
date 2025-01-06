@@ -26,6 +26,14 @@ const DashboardPage = () => {
       setError("Failed to fetch posts");
     }
   };
+  
+  const handleLogout = () => {
+    // Clear the auth token
+    localStorage.removeItem("authToken");
+
+    // Redirect to the login page
+    navigate("/");
+  };
 
   const handleCreatePost = async () => {
     if (!newPost.text) {

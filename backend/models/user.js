@@ -13,6 +13,12 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
+  phone: { 
+    type: String 
+  },
+  address: { 
+    type: String 
+  },
   photo: { 
     type: String 
   },

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from '../api/axios';
 
 const EditProfile = ({ user, updateUser }) => {
   const [editedUser, setEditedUser] = useState({ ...user });
@@ -8,10 +9,21 @@ const EditProfile = ({ user, updateUser }) => {
     setEditedUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    updateUser(editedUser);
-    console.log("Updated Profile:", editedUser);
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.put("/users/update-profile", editedUser, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Call updateUser to update the parent state
+      updateUser(response.data.user);
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Error updating profile:", error.response?.data || error.message);
+      alert("Failed to update profile.");
+    }
   };
 
   return (

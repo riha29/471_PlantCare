@@ -54,7 +54,7 @@ router.post('/signin', async (req, res) => {
     }
 
     // Generate JWT token
-    const token = sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '5h' });
 
     // Send response with token
     res.status(200).json({
@@ -68,16 +68,41 @@ router.post('/signin', async (req, res) => {
 });
 
 // get profile
-router.get('/profile', protect, async (req, res) => {
+router.get("/profile", protect, async (req, res) => {
   try {
-    const user = await User.findById(req.userId).select('-password');
+    const user = await User.findById(req.userId).select("-password"); // Exclude password
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
     res.status(200).json(user);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error fetching profile:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.put("/update-profile", protect, async (req, res) => {
+  const { name, email, phone, address } = req.body;
+
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update only the provided fields
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+    if (address) user.address = address;
+
+    // Save updated user
+    await user.save();
+
+    res.status(200).json({ message: "Profile updated successfully", user });
+  } catch (error) {
+    console.error("Error updating profile:", error.message);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
