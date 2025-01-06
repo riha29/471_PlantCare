@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
 const router = express.Router();
 const protect= require('../middleware/authMiddleware');
+const admin = require("../firebase");
 
 // User Signup
 router.post('/signup', async (req, res) => {
@@ -43,13 +44,13 @@ router.post('/signin', async (req, res) => {
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid Email' });
     }
 
     // Check if password is correct
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Password not Matched' });
     }
 
     // Generate JWT token
@@ -81,34 +82,51 @@ router.get('/profile', protect, async (req, res) => {
 });
 
 // Update Profile: Name, Email, Password
-router.put('/update-profile', protect, async (req, res) => {
-  const { name, email, password } = req.body;
+router.post("/google-signin", async (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.status(400).json({ message: "Token is missing" });
+  }
 
   try {
-    // Find the user by ID
-    const user = await User.findById(req.userId);
+    // Verify the Google ID token
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const { email, name, picture } = decodedToken;
+
+    // Check if user exists in MongoDB
+    let user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      // Create a new user if they don't exist
+      user = new User({
+        name,
+        email,
+        photo: picture, // Save profile picture
+        password: "google-auth", // Dummy password (not used)
+      });
+      await user.save();
     }
 
-    // Update fields if provided
-    if (name) user.name = name;
-    if (email) user.email = email;
-    if (password) {
-      // Hash the new password before saving
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
-    }
+    // Generate a custom JWT for your application
+    const jwtToken = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
-    // Save the updated user to the database
-    await user.save();
-
-    res.status(200).json({ message: 'Profile updated successfully', user });
+    res.status(200).json({
+      message: "Google sign-in successful",
+      token: jwtToken,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        photo: user.photo,
+      },
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error in Google sign-in:", error.message);
+    res.status(500).json({ message: "Failed to authenticate with Google" });
   }
 });
-
-
 module.exports = router;

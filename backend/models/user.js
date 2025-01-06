@@ -3,7 +3,7 @@ const { Schema } = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 // User Schema
-const userSchema = Schema({
+const userSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -12,6 +12,9 @@ const userSchema = Schema({
     type: String,
     required: true,
     unique: true,
+  },
+  photo: { 
+    type: String 
   },
   password: {
     type: String,
