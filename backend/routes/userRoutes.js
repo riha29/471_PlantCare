@@ -1,143 +1,125 @@
-const express = require('express');
-const User = require('../models/user');
-const bcrypt = require('bcryptjs');
-const { sign } = require('jsonwebtoken');
+const express = require("express");
 const router = express.Router();
-const protect= require('../middleware/authMiddleware');
+const bcrypt = require("bcryptjs");
+const {sign} = require("jsonwebtoken");
 const admin = require("../firebase");
+const User = require("../models/user");
+const protect = require("../middleware/authMiddleware");
+
+// Utility function for generating JWT tokens
+const generateToken = (payload) => {
+  return sign(payload, process.env.JWT_SECRET, {expiresIn: "1h"});
+};
 
 // User Signup
-router.post('/signup', async (req, res) => {
-  const { name, email, password } = req.body;
-  
+router.post("/signup", async (req, res) => {
+  const {name, email, password} = req.body;
+
   try {
     // Check if user already exists
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({email});
     if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({message: "User already exists"});
     }
-    // Create a new user
-    const user = new User({ name, email, password });
+
+    // Create a new user with hashed password
+    const user = new User({name, email, password});
 
     // Save the user
     await user.save();
 
+
     // Generate JWT token
-    const token = sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = generateToken({id: user._id});
 
     // Send response with token
     res.status(201).json({
-      message: 'User registered successfully',
-      token,
+      message: "User registered successfully",
+      token
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({message: "Server error"});
   }
 });
 
 // User Signin
-router.post('/signin', async (req, res) => {
-  const { email, password } = req.body;
+router.post("/signin", async (req, res) => {
+  const {email, password} = req.body;
 
   try {
-    // Check if user exists
-    const user = await User.findOne({ email });
+    const user = await User.findOne({email});
     if (!user) {
-      return res.status(401).json({ message: 'Invalid Email' });
+      return res.status(401).json({message: "Invalid Email"});
     }
 
     // Check if password is correct
-    const isMatch = await user.matchPassword(password);
+    const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
-      return res.status(401).json({ message: 'Password not Matched' });
+      console.log("Password incorrect");
+      return res.status(401).json({message: "Invalid Password"});
     }
 
     // Generate JWT token
-    const token = sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '5h' });
+    const token = generateToken({id: user._id, email: user.email});
 
     // Send response with token
     res.status(200).json({
-      message: 'User logged in successfully',
-      token,
+      message: "User logged in successfully",
+      token
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error in signin:", error);
+    res.status(500).json({message: "Server error"});
   }
 });
 
-// get profile
+// Get Profile
 router.get("/profile", protect, async (req, res) => {
+  console.log("Profile endpoint hit by userId:", req.userId);
   try {
-    const user = await User.findById(req.userId).select("-password"); // Exclude password
+    const user = await User.findById(req.userId).select("-password");
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      console.log("User not found in profile");
+      return res.status(404).json({message: "User not found"});
     }
     res.status(200).json(user);
   } catch (error) {
-    console.error("Error fetching profile:", error.message);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error in profile:", error);
+    res.status(500).json({message: "Server error"});
   }
 });
 
-router.put("/update-profile", protect, async (req, res) => {
-  const { name, email, phone, address } = req.body;
-
-  try {
-    const user = await User.findById(req.userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Update only the provided fields
-    if (name) user.name = name;
-    if (email) user.email = email;
-    if (phone) user.phone = phone;
-    if (address) user.address = address;
-
-    // Save updated user
-    await user.save();
-
-    res.status(200).json({ message: "Profile updated successfully", user });
-  } catch (error) {
-    console.error("Error updating profile:", error.message);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// Update Profile: Name, Email, Password
+// Google Sign-In
 router.post("/google-signin", async (req, res) => {
-  const { token } = req.body;
+  const {token} = req.body;
+  console.log("Google Sign-In endpoint hit with token:", token);
 
   if (!token) {
-    return res.status(400).json({ message: "Token is missing" });
+    return res.status(400).json({message: "Token is missing"});
   }
 
   try {
     // Verify the Google ID token
     const decodedToken = await admin.auth().verifyIdToken(token);
-    const { email, name, picture } = decodedToken;
+    const {email, name, picture} = decodedToken;
 
     // Check if user exists in MongoDB
-    let user = await User.findOne({ email });
+    let user = await User.findOne({email});
     if (!user) {
       // Create a new user if they don't exist
       user = new User({
         name,
         email,
         photo: picture, // Save profile picture
-        password: "google-auth", // Dummy password (not used)
+        password: "google-auth" // Dummy password (not used)
       });
       await user.save();
+      console.log("New user created via Google Sign-In:", user);
     }
 
     // Generate a custom JWT for your application
-    const jwtToken = jwt.sign(
-      { id: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    const jwtToken = generateToken({id: user._id, email: user.email});
 
     res.status(200).json({
       message: "Google sign-in successful",
@@ -146,12 +128,13 @@ router.post("/google-signin", async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        photo: user.photo,
-      },
+        photo: user.photo
+      }
     });
   } catch (error) {
     console.error("Error in Google sign-in:", error.message);
-    res.status(500).json({ message: "Failed to authenticate with Google" });
+    res.status(500).json({message: "Failed to authenticate with Google"});
   }
 });
+
 module.exports = router;

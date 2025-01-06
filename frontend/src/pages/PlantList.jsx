@@ -169,6 +169,26 @@ const PlantList = () => {
               className="w-full p-2 border rounded"
             />
           </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Last Watered</label>
+            <input
+              type="date"
+              value={newPlant.lastWatered}
+              onChange={(e) => setNewPlant({ ...newPlant, lastWatered: e.target.value})}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Last Fertilized</label>
+            <input
+              type="date"
+              value={newPlant.lastFertilized}
+              onChange={(e) => setNewPlant({ ...newPlant, lastFertilized: e.target.value})}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+
+          
           <button
             onClick={handleAddOrUpdatePlant}
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
@@ -191,8 +211,8 @@ const PlantList = () => {
             <h3 className="text-lg font-bold">{plant.name}</h3>
             <p>Species: {plant.species}</p>
             <p>Health: {plant.health || "Healthy"}</p>
-            <p>Last Watered: {plant.lastWatered || "Not yet"}</p>
-            <p>Last Fertilized: {plant.lastFertilized || "Not yet"}</p>
+            <p>Last Watered: {plant.lastWatered ? new Date(plant.lastWatered).toISOString().split('T')[0] : "Not yet"}</p>
+            <p>Last Fertilized: {plant.lastFertilized ? new Date(plant.lastFertilized).toISOString().split('T')[0] : "Not yet"}</p>
             <button
               onClick={() => handleEditPlant(plant)}
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-4"

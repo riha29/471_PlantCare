@@ -2,49 +2,35 @@ import React, { useEffect, useState } from 'react';
 import axios from '../api/axios';
 import EditProfile from './EditProfile';
 import { Link } from 'react-router-dom'; 
-import { useNavigate } from "react-router-dom";
 
 const UserProfile = () => {
   const [user, setUser] = useState({});
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [sharedPosts, setSharedPosts] = useState([]);
   const [preferences, setPreferences] = useState({
     eventNotifications: true,
     featureUpdates: true,
   });
   const [loadingPreferences, setLoadingPreferences] = useState(true);
-  const navigate = useNavigate();
 
   const updateUser = (updatedUser) => {
     setUser(updatedUser);
     setIsEditing(false);
   };
 
-  const handleLogout = () => {
-    // Clear the auth token
-    localStorage.removeItem("authToken");
-
-    // Redirect to the login page
-    navigate("/");
-  };
-
-  // Fetch user profile data from the backend
+  // Fetch user profile
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const token = localStorage.getItem("authToken");
-        const response = await axios.get("/users/profile", {
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get('/users/profile', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setUser(response.data); // Update state with user data
-        setLoading(false);
+        setUser(response.data);
       } catch (error) {
-        console.error("Error fetching user profile:", error.response?.data || error.message);
-        setLoading(false);
+        console.error('Error fetching user profile:', error.response?.data || error.message);
       }
     };
-
     fetchUserProfile();
   }, []);
 
@@ -99,8 +85,6 @@ const UserProfile = () => {
   if (isEditing) {
     return <EditProfile user={user} updateUser={updateUser} />;
   }
-  if (loading) return <p>Loading...</p>;
-  if (!user) return <p>Loading...</p>;
 
   return (
     <div>
@@ -117,9 +101,6 @@ const UserProfile = () => {
             <Link to="/plants" className="hover:underline">Plants</Link>
             <Link to="/marketplace" className="hover:underline">MarketplacePage</Link>
             <Link to="/profile" className="hover:underline">User</Link>
-            <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">
-              Logout
-            </button>
           </div>
         </div>
       </nav>

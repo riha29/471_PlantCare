@@ -1,18 +1,19 @@
-const express = require('express');
-const cors = require('cors');
-const cron = require("node-cron")
-const connectDB = require('./config/db');
-const dotenv = require('dotenv');
+const express = require("express");
+const cors = require("cors");
+const cron = require("node-cron");
+const connectDB = require("./config/db");
+const dotenv = require("dotenv");
 
-const userRoutes = require('./routes/userRoutes');
-const plantRoutes = require('./routes/plantRoutes');
+const morgan = require("morgan");
+
+const userRoutes = require("./routes/userRoutes");
+const plantRoutes = require("./routes/plantRoutes");
 const marketplaceRoutes = require("./routes/marketPlaceRoutes");
 const productRoutes = require("./routes/productRoutes");
 const checkoutRoutes = require("./routes/checkoutRoutes");
-const transactionRoutes = require('./routes/transactionRoutes');
+const transactionRoutes = require("./routes/transactionRoutes");
 const postRoutes = require("./routes/postRoutes");
 const Plant = require("./models/plant");
-
 
 // Load environment variables
 dotenv.config();
@@ -21,20 +22,23 @@ dotenv.config();
 connectDB();
 const app = express();
 
+app.use(morgan("dev"));
 // Middleware
-app.use(cors({ 
-  origin: 'http://localhost:3000',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000" || "https://plant-final-front.onrender.com",
+    credentials: true
+  })
+);
 app.use(express.json()); // Parse incoming JSON requests
 
 // Routes
-app.use('/api/users', userRoutes);
-app.use('/api/plants', plantRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/plants", plantRoutes);
 app.use("/api/marketplace", marketplaceRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/checkout", checkoutRoutes);
-app.use("/api/", transactionRoutes); 
+app.use("/api/", transactionRoutes);
 app.use("/api/posts", postRoutes);
 
 // Schedule the task to run daily at midnight
@@ -48,9 +52,18 @@ cron.schedule("0 0 * * *", async () => {
     // Iterate over each plant and check notifications
     const notifications = [];
     plants.forEach((plant) => {
-      const { name, userId, lastWatered, lastFertilized, lastPruned, waterInterval, fertilizeInterval, pruneInterval } = plant;
+      const {
+        name,
+        userId,
+        lastWatered,
+        lastFertilized,
+        lastPruned,
+        waterInterval,
+        fertilizeInterval,
+        pruneInterval
+      } = plant;
 
-      const userNotification = { userId, plant: name, messages: [] };
+      const userNotification = {userId, plant: name, messages: []};
 
       // Check watering schedule
       if (lastWatered) {
@@ -66,7 +79,9 @@ cron.schedule("0 0 * * *", async () => {
         const nextFertilizing = new Date(lastFertilized);
         nextFertilizing.setDate(nextFertilizing.getDate() + fertilizeInterval);
         if (today >= nextFertilizing) {
-          userNotification.messages.push(`Time to fertilize your plant "${name}".`);
+          userNotification.messages.push(
+            `Time to fertilize your plant "${name}".`
+          );
         }
       }
 
