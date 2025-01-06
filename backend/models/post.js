@@ -12,6 +12,26 @@ const postSchema = new mongoose.Schema(
     text: { type: String, required: true },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // List of user IDs who liked the post
     comments: [commentSchema], // List of comments
+    
+    // New fields for share functionality
+    originalPostId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "Post" 
+    },
+    isShared: { 
+      type: Boolean, 
+      default: false 
+    },
+    sharedFrom: { 
+      type: String 
+    },
+    shareCount: { 
+      type: Number, 
+      default: 0 
+    },
+    originalCreatedAt: { 
+      type: Date 
+    }
   },
   { timestamps: true }
 );

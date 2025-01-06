@@ -8,22 +8,24 @@ const DashboardPage = () => {
   const [newPost, setNewPost] = useState({ text: "", photo: "" });
   const [error, setError] = useState("");
   const [commentText, setCommentText] = useState({});
+  const [shareSuccess, setShareSuccess] = useState(false);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const token = localStorage.getItem("authToken");
-        const response = await axios.get("/posts", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setPosts(response.data);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to fetch posts");
-      }
-    };
     fetchPosts();
   }, []);
+
+  const fetchPosts = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.get("/posts", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setPosts(response.data);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch posts");
+    }
+  };
 
   const handleCreatePost = async () => {
     if (!newPost.text) {
@@ -40,6 +42,7 @@ const DashboardPage = () => {
       );
       setPosts([response.data, ...posts]);
       setNewPost({ text: "", photo: "" });
+      setError("");
     } catch (err) {
       console.error("Error creating post:", err.response?.data || err.message);
       setError("Failed to create post");
@@ -78,6 +81,7 @@ const DashboardPage = () => {
         prev.map((post) => (post._id === postId ? response.data : post))
       );
       setCommentText((prev) => ({ ...prev, [postId]: "" }));
+      setError("");
     } catch (err) {
       console.error(err);
       setError("Failed to add comment");
@@ -87,12 +91,39 @@ const DashboardPage = () => {
   const handleSharePost = async (postId) => {
     try {
       const token = localStorage.getItem("authToken");
+      const postToShare = posts.find(post => post._id === postId);
+      
+      const sharedPost = {
+        originalPostId: postId,
+        text: postToShare.text,
+        photo: postToShare.photo,
+        sharedFrom: postToShare.userId?.name || "Unknown User",
+        isShared: true,
+        originalCreatedAt: postToShare.createdAt
+      };
+
       await axios.post(
-        `/posts/${postId}/share`,
-        {},
+        `/posts/share`,
+        sharedPost,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      alert("Post shared successfully!");
+
+      // Update UI to show success message
+      setShareSuccess(true);
+      setTimeout(() => setShareSuccess(false), 3000);
+
+      // Update share count in UI
+      setPosts(posts.map(post => {
+        if (post._id === postId) {
+          return {
+            ...post,
+            shareCount: (post.shareCount || 0) + 1
+          };
+        }
+        return post;
+      }));
+
+      setError("");
     } catch (err) {
       console.error("Error sharing post:", err);
       setError("Failed to share post");
@@ -116,6 +147,13 @@ const DashboardPage = () => {
           </div>
         </div>
       </nav>
+
+      {/* Success Message */}
+      {shareSuccess && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+          Post shared successfully to your profile!
+        </div>
+      )}
 
       {/* New Post Form */}
       <div className="flex items-center mt-20 justify-center mb-6">
@@ -155,7 +193,10 @@ const DashboardPage = () => {
                 />
                 <div className="ml-4">
                   <h3 className="font-bold">{post.userId?.name || "Unknown User"}</h3>
-                  <p className="text-sm text-gray-500">Just now</p>
+                  <p className="text-sm text-gray-500">
+                    {post.isShared && <span className="text-gray-400">Shared from {post.sharedFrom} • </span>}
+                    {new Date(post.createdAt).toLocaleDateString()}
+                  </p>
                 </div>
               </div>
               {post.photo && (
@@ -173,17 +214,17 @@ const DashboardPage = () => {
                   onClick={() => handleLikePost(post._id)}
                   className="text-blue-500 hover:text-blue-700 flex items-center space-x-2"
                 >
-                  <FaThumbsUp /> <span>{post.likes.length} Likes</span>
+                  <FaThumbsUp /> <span>{post.likes?.length || 0} Likes</span>
                 </button>
                 <button
                   onClick={() => handleSharePost(post._id)}
                   className="text-blue-500 hover:text-blue-700 flex items-center space-x-2"
                 >
-                  <FaShare /> <span>Share</span>
+                  <FaShare /> <span>{post.shareCount || 0} Shares</span>
                 </button>
               </div>
               <div className="mt-4">
-                {post.comments.map((comment, index) => (
+                {post.comments?.map((comment, index) => (
                   <p key={index} className="text-sm bg-gray-100 p-2 rounded-lg mb-2">
                     <strong>{comment.userId?.name || "Anonymous"}:</strong> {comment.text}
                   </p>
