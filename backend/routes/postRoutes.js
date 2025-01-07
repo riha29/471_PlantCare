@@ -60,9 +60,17 @@ router.post("/:postId/comment", protect, async (req, res) => {
     const post = await Post.findById(req.params.postId);
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    post.comments.push({ userId: req.userId, text });
-    await post.save();
-    res.status(200).json(post);
+    // setTimeout(async () => {
+    //   try {
+    //     post.comments.push({ userId: req.userId, text });
+    //     await post.save();
+    //     res.status(200).json(post);
+    //   } catch (saveErr) {
+    //     console.error(saveErr);
+    //     res.status(500).json({ message: "Failed to save comment after delay" });
+    //   }
+    // }, 5000);
+    
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to add comment" });

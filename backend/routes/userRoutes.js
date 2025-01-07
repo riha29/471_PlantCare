@@ -56,7 +56,7 @@ router.post("/signin", async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      console.log("Password incorrect");
+      ("Password incorrect");
       return res.status(401).json({message: "Invalid Password"});
     }
 
@@ -76,11 +76,11 @@ router.post("/signin", async (req, res) => {
 
 // Get Profile
 router.get("/profile", protect, async (req, res) => {
-  console.log("Profile endpoint hit by userId:", req.userId);
+  ("Profile endpoint hit by userId:", req.userId);
   try {
     const user = await User.findById(req.userId).select("-password");
     if (!user) {
-      console.log("User not found in profile");
+      ("User not found in profile");
       return res.status(404).json({message: "User not found"});
     }
     res.status(200).json(user);
@@ -93,7 +93,7 @@ router.get("/profile", protect, async (req, res) => {
 // Google Sign-In
 router.post("/google-signin", async (req, res) => {
   const {token} = req.body;
-  console.log("Google Sign-In endpoint hit with token:", token);
+  ("Google Sign-In endpoint hit with token:", token);
 
   if (!token) {
     return res.status(400).json({message: "Token is missing"});
@@ -115,7 +115,7 @@ router.post("/google-signin", async (req, res) => {
         password: "google-auth" // Dummy password (not used)
       });
       await user.save();
-      console.log("New user created via Google Sign-In:", user);
+      ("New user created via Google Sign-In:", user);
     }
 
     // Generate a custom JWT for your application
